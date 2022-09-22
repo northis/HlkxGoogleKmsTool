@@ -1,3 +1,6 @@
+This is a fork from https://github.com/vcsjones/OpenOpcSignTool ported to sign HLKX files using Azure Key Vault. The usage is the same of the OOST and it works for submission at Microsoft Partner Center. 
+
+
 OpenOpcSignTool
 ================
 
@@ -8,16 +11,6 @@ with additional "OPC" package signing options to come.
 
 It offers a number of benefits, such as easily using certificates from hardware tokens, HSMs, Azure Key Vault, etc by allowing
 any certificate from the Certificate Store to be used instead of a PFX.
-
-## Installing
-
-Using .NET Core 2.1 or later:
-
-```shell
-dotnet tool install -g OpenVsixSignTool
-```
-
-Alternatively, it can be built by itself
 
 ## Using
 
