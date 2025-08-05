@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1</TargetFrameworks>    
+    <TargetFramework>net8.0</TargetFramework>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -15,19 +15,9 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == 'net462'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="System.Memory" Version="4.5.1" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Security" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'netcoreapp2.1'">
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.5.1" />
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.3" />
   </ItemGroup>
 
 
@@ -40,11 +30,7 @@
     <None Include="Interop\*.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == 'netcoreapp2.1'">
+  <ItemGroup>
     <Compile Include="Timestamp\*.netcoreapp.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'net462'">
-    <Compile Include="Timestamp\*.netfx.cs" />
-    <Compile Include="Interop\*.cs" />
   </ItemGroup>
 </Project>

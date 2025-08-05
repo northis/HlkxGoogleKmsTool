@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>OpenVsixSignTool</PackageId>
     <Copyright>Kevin Jones 2016-2018</Copyright>
     <PackAsTool>true</PackAsTool>
@@ -13,15 +13,17 @@
     <RepositoryUrl>https://github.com/vcsjones/OpenOpcSignTool</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IsTestProject>false</IsTestProject>
-    <UseWPF>true</UseWPF>
+    <UseWPF>false</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Cloud.Kms.V1" Version="3.18.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.0" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.4" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Cryptography" Version="3.0.4" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <PackageReference Include="RSAKeyVaultProvider" Version="1.1.22" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenVsixSignTool.Core\OpenVsixSignTool.Core.csproj" />

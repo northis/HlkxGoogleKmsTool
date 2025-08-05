@@ -9,7 +9,7 @@ namespace OpenVsixSignTool
             var application = new CommandLineApplication(throwOnUnexpectedArg: false);
             var signCommand = application.Command("sign", throwOnUnexpectedArg: false, configuration: signConfiguration =>
                 {
-                    signConfiguration.Description = "Signs a VSIX package.";
+                    signConfiguration.Description = "Signs a VSIX/HLKX package.";
                     signConfiguration.HelpOption("-? | -h | --help");
                     var sha1 = signConfiguration.Option("-s | --sha1", "A hex-encoded SHA-1 thumbprint of the certificate used to sign the executable.", CommandOptionType.SingleValue);
                     var pfxPath = signConfiguration.Option("-c | --certificate", "A path to a PFX file to perform the signature.", CommandOptionType.SingleValue);
@@ -18,13 +18,17 @@ namespace OpenVsixSignTool
                     var timestampAlgorithm = signConfiguration.Option("-ta | --timestamp-algorithm", "The digest algorithm of the timestamp.", CommandOptionType.SingleValue);
                     var fileDigest = signConfiguration.Option("-fd | --file-digest", "A URL of the timestamping server to timestamp the signature.", CommandOptionType.SingleValue);
                     var force = signConfiguration.Option("-f | --force", "Force the signature by overwriting any existing signatures.", CommandOptionType.NoValue);
-                    var file = signConfiguration.Argument("file", "A to the VSIX file.");
+                    var file = signConfiguration.Argument("file", "A path to the VSIX/HLKX file.");
 
                     var azureKeyVaultUrl = signConfiguration.Option("-kvu | --azure-key-vault-url", "The URL to an Azure Key Vault.", CommandOptionType.SingleValue);
                     var azureKeyVaultClientId = signConfiguration.Option("-kvi | --azure-key-vault-client-id", "The Client ID to authenticate to the Azure Key Vault.", CommandOptionType.SingleValue);
                     var azureKeyVaultClientSecret = signConfiguration.Option("-kvs | --azure-key-vault-client-secret", "The Client Secret to authenticate to the Azure Key Vault.", CommandOptionType.SingleValue);
                     var azureKeyVaultCertificateName = signConfiguration.Option("-kvc | --azure-key-vault-certificate", "The name of the certificate in Azure Key Vault.", CommandOptionType.SingleValue);
                     var azureKeyVaultAccessToken = signConfiguration.Option("-kva | --azure-key-vault-accesstoken", "The Access Token to authenticate to the Azure Key Vault.", CommandOptionType.SingleValue);
+
+                    var googleKmsCredentialsFilePath = signConfiguration.Option("-gcf | --google-KMS-credentials-file-path", "The path to Google KMS credentials file.", CommandOptionType.SingleValue);
+                    var certificateFilePath = signConfiguration.Option("-cf | --public-certificate-file-path", "The path to public certificate file.", CommandOptionType.SingleValue);
+                    var googleKmsKeyNameString = signConfiguration.Option("-gks | --google-KMS-key-string", "The path to Google KMS credentials file.", CommandOptionType.SingleValue);
 
                     signConfiguration.OnExecute(() =>
                     {
@@ -33,7 +37,11 @@ namespace OpenVsixSignTool
                         {
                             return sign.SignAsync(sha1, pfxPath, password, timestamp, timestampAlgorithm, fileDigest, force, file);
                         }
-                        else
+                        else if (googleKmsCredentialsFilePath.HasValue() && certificateFilePath.HasValue() && googleKmsKeyNameString.HasValue())
+                        {
+
+                            return sign.SignGoogle(googleKmsCredentialsFilePath, certificateFilePath, googleKmsKeyNameString, file);
+                        }
                         {
                             return sign.SignAzure(azureKeyVaultUrl, azureKeyVaultClientId, azureKeyVaultClientSecret,
                                 azureKeyVaultCertificateName, azureKeyVaultAccessToken, force, fileDigest, timestamp, timestampAlgorithm, file);

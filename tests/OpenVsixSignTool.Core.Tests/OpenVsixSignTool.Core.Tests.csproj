@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>OpenVsixSignTool.Core.Tests</AssemblyName>
     <PackageId>OpenVsixSignTool.Core.Tests</PackageId>
     <VersionPrefix>0.1.0</VersionPrefix>
@@ -8,20 +8,18 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
   
-  <ItemGroup Condition="$(TargetFramework) == 'net462'">
-    <Reference Include="System.Security" />
-  </ItemGroup>
+
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
     <ProjectReference Include="..\..\src\OpenVsixSignTool.Core\OpenVsixSignTool.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) != 'net462'">
+  <ItemGroup>
     <Compile Remove="Crypt32Tests.cs" />
     <None Include="Crypt32Tests.cs" />
   </ItemGroup>

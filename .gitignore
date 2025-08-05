@@ -1,5 +1,6 @@
 # General
 .vs/
+.vscode/
 obj/
 bin/
 private/
@@ -16,3 +17,6 @@ launchSettings.json
 # Rider
 .idea/
 *.sln.iml
+
+build/
+OpenVsixSignTool.sln.DotSettings

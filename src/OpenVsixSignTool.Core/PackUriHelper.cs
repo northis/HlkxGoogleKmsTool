@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //
 // <copyright file="PackUriHelper.cs" company="Microsoft">
 //    Copyright (C) Microsoft Corporation.  All rights reserved.
@@ -682,24 +682,13 @@ namespace OpenVsixSignTool
         //   the pack: scheme has no elevations in it ( and any necessary elevations for container 
         //   access will be reviewed as needed). 
         // </SecurityNote>         
-        [SecurityTreatAsSafe, SecurityCritical]
         static PackUriHelper()
         {
             // indicate that we want "basic" parsing
             if (!UriParser.IsKnownScheme(UriSchemePack))
             {
-                try
-                {
-                    SecurityPermission permobj = new SecurityPermission(SecurityPermissionFlag.Infrastructure);
-                    permobj.Assert(); //BlessedAssert:
-
-                    // Indicate that we want a default hierarchical parser with a registry based authority
-                    UriParser.Register(new GenericUriParser(GenericUriParserOptions.GenericAuthority), UriSchemePack, -1);
-                }
-                finally
-                {
-                    SecurityPermission.RevertAssert();
-                }
+                // Indicate that we want a default hierarchical parser with a registry based authority
+                UriParser.Register(new GenericUriParser(GenericUriParserOptions.GenericAuthority), UriSchemePack, -1);
             }
         }
 

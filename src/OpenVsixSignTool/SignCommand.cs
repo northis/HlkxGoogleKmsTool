@@ -116,6 +116,52 @@ namespace OpenVsixSignTool
                 certificate, GetSigningKeyFromCertificate(certificate));
         }
 
+        internal async Task<int> SignGoogle(CommandOption googleKmsCredentialsFilePath, CommandOption certificateFilePath,
+            CommandOption googleKmsKeyNameString, CommandArgument filePath)
+        {
+
+            if (!googleKmsCredentialsFilePath.HasValue())
+            {
+                _signCommandApplication.Out.WriteLine("The Google KMS credentials JSON file path must be specified for Google KMS signing.");
+                return EXIT_CODES.INVALID_OPTIONS;
+            }
+
+            if (!certificateFilePath.HasValue())
+            {
+                _signCommandApplication.Out.WriteLine("The public certificate path must be specified for Google KMS signing.");
+                return EXIT_CODES.INVALID_OPTIONS;
+            }
+
+            if (!googleKmsKeyNameString.HasValue())
+            {
+                _signCommandApplication.Out.WriteLine("The KMS key name string like 'projects/<>/locations/<>/keyRings/<>/cryptoKeys/<>/cryptoKeyVersions/1' must be specified for Google KMS signing.");
+                return EXIT_CODES.INVALID_OPTIONS;
+            }
+
+            var inputPathValue = filePath.Value;
+            if (!File.Exists(inputPathValue))
+            {
+                _signCommandApplication.Out.WriteLine($"Specified file does not exist: {inputPathValue}");
+                return EXIT_CODES.FAILED;
+            }
+
+            HashAlgorithmName fileDigestAlgorithm = HashAlgorithmName.SHA256, timestampDigestAlgorithm = HashAlgorithmName.SHA256;
+
+            var certificate = new X509Certificate2(certificateFilePath.Value());
+            using (var googleRsa = new GoogleKmsRsa(googleKmsCredentialsFilePath.Value(), googleKmsKeyNameString.Value(), certificate))
+            {
+                return await PerformSignOnVsixAsync(
+                    filePath.Value,
+                    false,
+                    null,
+                    fileDigestAlgorithm,
+                    timestampDigestAlgorithm,
+                    certificate,
+                    googleRsa
+                );
+            }
+        }
+
         internal async Task<int> SignAzure(CommandOption azureKeyVaultUrl, CommandOption azureKeyVaultClientId,
             CommandOption azureKeyVaultClientSecret, CommandOption azureKeyVaultCertificateName, CommandOption azureKeyVaultAccessToken, CommandOption force,
             CommandOption fileDigest, CommandOption timestampUrl, CommandOption timestampAlgorithm, CommandArgument vsixPath)
