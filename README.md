@@ -13,12 +13,13 @@ Build:
 mkdir build
 dotnet publish src/OpenVsixSignTool/OpenVsixSignTool.csproj -c Release -o ./build
 ```
+To sign a HLKX file, you need a public leaf certificate, a [JSON file with credentials](https://cloud.google.com/docs/authentication/application-default-credentials#personal) and a key ring string given from Google KMS service. This tools supports work with [service accounts](https://cloud.google.com/iam/docs/service-accounts) only.
 
 Usage:
 
 ```shell
 cd build
-dotnet OpenVsixSignTool.dll sign -cf cerfiticate.cer -gcf credentials.json -gks projects/<project_id>/locations/global/keyRings/<key_ring>/cryptoKeys/<crypto_keys>/cryptoKeyVersions/1 <file_to_sign>.hlkx
+OpenVsixSignTool sign -cf cerfiticate.cer -gcf credentials.json -gks projects/<project_id>/locations/global/keyRings/<key_ring>/cryptoKeys/<crypto_keys>/cryptoKeyVersions/1 <file_to_sign>.hlkx
 ```
 
 Use `run.ps1` or `run.sh` to run it via Docker. See `Dockerfile` for more information.
