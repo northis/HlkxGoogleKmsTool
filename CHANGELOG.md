@@ -4,9 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/northis/HlkxGoogleKmsTool/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/northis/HlkxGoogleKmsTool/compare/v1.0.1...HEAD
 
-## [1.0.0] - 2025-08-06
+## [1.0.1] - 2025-08-06
 
 ### Added
 
@@ -16,4 +16,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 * Updated to .NET 8.0
 
-[1.0.0]: https://github.com/northis/HlkxGoogleKmsTool/releases/tag/v1.0.0
+[1.0.1]: https://github.com/northis/HlkxGoogleKmsTool/releases/tag/v1.0.1

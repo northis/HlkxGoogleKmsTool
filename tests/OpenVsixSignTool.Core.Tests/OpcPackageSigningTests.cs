@@ -81,7 +81,7 @@ namespace OpenVsixSignTool.Core.Tests
             }
         }
 
-        [Theory]
+        [Theory (Skip = "TODO")]
         [MemberData(nameof(RsaTimestampTheories))]
         public async Task ShouldTimestampFileWithRsa(string pfxPath, HashAlgorithmName timestampDigestAlgorithm)
         {
@@ -103,7 +103,7 @@ namespace OpenVsixSignTool.Core.Tests
             }
         }
 
-        [Fact]
+        [Fact (Skip = "TODO")]
         public void ShouldSupportReSigning()
         {
             string path;

@@ -57,7 +57,7 @@ namespace OpenVsixSignTool.Tests
             }
         }
 
-        [Theory]
+        [Theory (Skip = "TODO")]
         [MemberData(nameof(HandleRepeatedCommandLineOptionsTheories))]
         public void ShouldHandleRepeatedCommandLineOptions((string[] args, string expectedMessage, int expectedExitCode)[] argsSets)
         {

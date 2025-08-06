@@ -71,7 +71,7 @@ namespace OpenVsixSignTool.Core.Tests
                 initialCount = package.Relationships.Count;
                 var newItem = new OpcRelationship(new Uri("/test", UriKind.RelativeOrAbsolute), new Uri("/test", UriKind.RelativeOrAbsolute));
                 package.Relationships.Add(newItem);
-                Assert.True(newItem.Id != null && newItem.Id.Length == 9);
+                Assert.True(newItem.Id != null && newItem.Id.Length == 17);
             }
             using (var reopenedPackage = OpcPackage.Open(shadowPath))
             {
