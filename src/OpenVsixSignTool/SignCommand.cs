@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.CommandLineUtils;
 using OpenVsixSignTool.Core;
 using System;
@@ -27,6 +27,37 @@ namespace OpenVsixSignTool
             _signCommandApplication = signCommandApplication;
         }
 
+        private X509Certificate2 GetLeafCertificateFromFile(string certificateFilePath)
+        {
+            var collection = new X509Certificate2Collection();
+            collection.Import(certificateFilePath);
+
+            // If only one certificate, return it
+            if (collection.Count == 1)
+            {
+                return collection[0];
+            }
+
+            // Find the leaf certificate (end-entity certificate)
+            // A leaf certificate is one that is not a CA certificate
+            foreach (X509Certificate2 cert in collection)
+            {
+                var basicConstraintsExt = cert.Extensions.OfType<X509BasicConstraintsExtension>().FirstOrDefault();
+                
+                // If it has basic constraints and is marked as CA, skip it
+                if (basicConstraintsExt is { CertificateAuthority: true })
+                {
+                    continue;
+                }
+                
+                // This is likely the leaf certificate
+                return cert;
+            }
+            
+            // Fallback: return the last certificate in the collection (often the leaf)
+            return collection[^1];
+        }
+        
         internal Task<int> SignAsync
         (
             CommandOption sha1,
@@ -147,7 +178,7 @@ namespace OpenVsixSignTool
 
             HashAlgorithmName fileDigestAlgorithm = HashAlgorithmName.SHA256, timestampDigestAlgorithm = HashAlgorithmName.SHA256;
 
-            var certificate = new X509Certificate2(certificateFilePath.Value());
+            var certificate = GetLeafCertificateFromFile(certificateFilePath.Value());
             using (var googleRsa = new GoogleKmsRsa(googleKmsCredentialsFilePath.Value(), googleKmsKeyNameString.Value(), certificate))
             {
                 return await PerformSignOnVsixAsync(
