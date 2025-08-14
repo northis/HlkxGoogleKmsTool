@@ -19,7 +19,7 @@ Usage:
 
 ```shell
 cd build
-OpenVsixSignTool sign -cf cerfiticate.cer -gcf credentials.json -gks projects/<project_id>/locations/global/keyRings/<key_ring>/cryptoKeys/<crypto_keys>/cryptoKeyVersions/1 <file_to_sign>.hlkx
+OpenVsixSignTool sign -cf certificate.cer -gcf credentials.json -gks projects/<project_id>/locations/global/keyRings/<key_ring>/cryptoKeys/<crypto_keys>/cryptoKeyVersions/1 <file_to_sign>.hlkx
 ```
 
 Use `run.ps1` or `run.sh` to run it via Docker. See `Dockerfile` for more information.
