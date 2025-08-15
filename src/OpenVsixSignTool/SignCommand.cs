@@ -13,6 +13,12 @@ namespace OpenVsixSignTool
 {
     class SignCommand
     {
+        private const string BEGIN_CERTIFICATE = "-----BEGIN CERTIFICATE-----";
+        private const string END_CERTIFICATE = "-----END CERTIFICATE-----";
+        private const string R = "\r";
+        private const string N = "\n";
+        private const string RN = R + N;
+
         internal static class EXIT_CODES
         {
             public const int SUCCESS = 0;
@@ -29,33 +35,76 @@ namespace OpenVsixSignTool
 
         private X509Certificate2 GetLeafCertificateFromFile(string certificateFilePath)
         {
-            var collection = new X509Certificate2Collection();
+            // Read file content to check if it's PEM format with multiple certificates
+            string fileContent = File.ReadAllText(certificateFilePath);
+            string[] delimiters = [$"{END_CERTIFICATE}{RN}{BEGIN_CERTIFICATE}", $"{END_CERTIFICATE}{N}{BEGIN_CERTIFICATE}"
+            ];
+
+            string delimiter = delimiters.FirstOrDefault(a => fileContent.Contains(a));
+            // Check if file contains multiple PEM certificates
+            if (!string.IsNullOrEmpty(delimiter))
+            {
+                _signCommandApplication.Out.WriteLine("PEM file with multiple certificates detected, using leaf certificate.");
+                
+                // Split by delimiter and take the last certificate
+                string[] parts = fileContent.Split([delimiter], StringSplitOptions.RemoveEmptyEntries);
+                string lastCertPem = parts[^1];
+                
+                // Ensure the parts have proper PEM headers
+                if (!lastCertPem.StartsWith(BEGIN_CERTIFICATE))
+                {
+                    lastCertPem =
+                        $"{BEGIN_CERTIFICATE}{RN}{lastCertPem.Replace(R, string.Empty).Replace(N, string.Empty)}";
+                }
+                if (!lastCertPem.EndsWith(END_CERTIFICATE))
+                {
+                    lastCertPem = $"{lastCertPem.Replace(R, string.Empty).Replace(N, string.Empty)}{RN}{END_CERTIFICATE}";
+                }
+
+                // Create certificate from the last PEM block
+                var certBytes = System.Text.Encoding.UTF8.GetBytes(lastCertPem);
+                return new X509Certificate2(certBytes);
+            }
+            
+            // For non-PEM or single certificate files, use original logic
+            var cert1 = new X509Certificate2(certificateFilePath);
+            var collection = new X509Certificate2Collection(cert1);
             collection.Import(certificateFilePath);
 
-            // If only one certificate, return it
             if (collection.Count == 1)
             {
+                _signCommandApplication.Out.WriteLine("Use single certificate for signing.");
                 return collection[0];
             }
 
-            // Find the leaf certificate (end-entity certificate)
-            // A leaf certificate is one that is not a CA certificate
+            _signCommandApplication.Out.WriteLine("Use full-chain certificate for signing.");
+            X509Certificate2 firstCandidate = null;
             foreach (X509Certificate2 cert in collection)
             {
-                var basicConstraintsExt = cert.Extensions.OfType<X509BasicConstraintsExtension>().FirstOrDefault();
-                
-                // If it has basic constraints and is marked as CA, skip it
+                X509BasicConstraintsExtension basicConstraintsExt = cert.Extensions
+                    .OfType<X509BasicConstraintsExtension>()
+                    .FirstOrDefault();
+
                 if (basicConstraintsExt is { CertificateAuthority: true })
-                {
                     continue;
-                }
-                
-                // This is likely the leaf certificate
-                return cert;
+
+                var keyUsageExt = cert.Extensions
+                    .OfType<X509KeyUsageExtension>()
+                    .FirstOrDefault();
+
+                if (keyUsageExt != null &&
+                    (keyUsageExt.KeyUsages & (X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyEncipherment)) == 0)
+                    continue;
+
+                firstCandidate = cert;
+                break;
             }
-            
-            // Fallback: return the last certificate in the collection (often the leaf)
-            return collection[^1];
+
+            if (firstCandidate != null)
+                return firstCandidate;
+
+            _signCommandApplication.Out.WriteLine("A fallback certificate for signing has been used.");
+            return collection[collection.Count - 1];
         }
         
         internal Task<int> SignAsync

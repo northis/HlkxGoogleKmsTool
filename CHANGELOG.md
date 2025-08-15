@@ -4,7 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/northis/HlkxGoogleKmsTool/compare/v1.0.2...HEAD
+[unreleased]: https://github.com/northis/HlkxGoogleKmsTool/compare/v1.0.3...HEAD
+
+## [1.0.3] - 2025-08-16
+
+### Fixed
+
+* Support full-chain certificates
+
+[See changes][1.0.3changes].
+
+[1.0.3changes]: https://github.com/northis/HlkxGoogleKmsTool/compare/v1.0.2...v1.0.3
+
+[1.0.3]: https://github.com/northis/HlkxGoogleKmsTool/releases/tag/v1.0.3
 
 ## [1.0.2] - 2025-08-14
 
