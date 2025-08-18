@@ -61,9 +61,8 @@ namespace OpenVsixSignTool
                     lastCertPem = $"{lastCertPem.Replace(R, string.Empty).Replace(N, string.Empty)}{RN}{END_CERTIFICATE}";
                 }
 
-                // Create certificate from the last PEM block
-                var certBytes = System.Text.Encoding.UTF8.GetBytes(lastCertPem);
-                return new X509Certificate2(certBytes);
+                // Create a certificate from the last PEM block
+                return X509Certificate2.CreateFromPem(lastCertPem);
             }
             
             // For non-PEM or single certificate files, use original logic
